@@ -4,13 +4,11 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.util.AttributeSet;
 
-
-public class Square extends View{
+public class Square extends View {
 
     Paint paint = new Paint();
     float startX = 0f;
@@ -36,7 +34,7 @@ public class Square extends View{
         init();
     }
 
-    private void init(){
+    private void init() {
         setFocusable(true);
         paint = new Paint();
         canvas = new Canvas();
@@ -50,12 +48,10 @@ public class Square extends View{
     public void onDraw(Canvas canvas) {
 
         canvas.drawColor(Color.TRANSPARENT);
-        if(isDown) {
+        if (isDown) {
             canvas.drawRect(startX, startY, endX, endY, paint);
         }
-
-
-        }
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -63,13 +59,13 @@ public class Square extends View{
             case MotionEvent.ACTION_DOWN:
                 onActionDown(event);
                 break;
-            case MotionEvent.ACTION_MOVE :
-               onActionMove(event);
+            case MotionEvent.ACTION_MOVE:
+                onActionMove(event);
                 break;
-            case MotionEvent.ACTION_UP :
+            case MotionEvent.ACTION_UP:
                 onActionUp(event);
                 break;
-            default :
+            default:
                 break;
         }
 
@@ -80,25 +76,24 @@ public class Square extends View{
     }
 
     private void onActionDown(MotionEvent event) {
-        this.startX = event.getX();
-        this.startY = event.getY();
+        startX = event.getX();
+        startY = event.getY();
 
-        endY=0;
-        endX=0;
+        endY = 0;
+        endX = 0;
 
     }
 
     private void onActionMove(MotionEvent event) {
         endX = event.getX();
         endY = event.getY();
-        isDown=true;
+        isDown = true;
     }
 
     private void onActionUp(MotionEvent event) {
         endX = event.getX();
         endY = event.getY();
-        isDown=true;
-
+        isDown = true;
     }
 
 }
