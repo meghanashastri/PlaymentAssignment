@@ -8,27 +8,11 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.util.AttributeSet;
+
 import com.example.meg.playmentassignment.models.Points;
+
 import java.util.ArrayList;
 import java.util.List;
-
-
-
-
-/*You have to create a simple drawing app.
-        The user must be able to:
-            -- Draw a square where the screen is touched
-            -- Draw multiple squares
-            Slider to adjust the size
-            Button to print out the array of square coordinates
-            Possible format: [{coordinates: [(x1, y1), (x2, y2), (x3, y3), (x4, y4)]}, {coordinates: [(x1, y1), (x2, y2), (x3, y3), (x4, y4)]}]
-            The data need not be persistent after closing and reopening the app.
-
-        Evaluation will be based on
-        Code and data structure/architecture
-        Functionality
-        Design
-        In the mentioned order of weightage*/
 
 
 public class Square extends View {
@@ -49,7 +33,7 @@ public class Square extends View {
     int endY = 1;
 
     //List of all squares draw on the canvas
-    List<Points> mSquareList = new ArrayList<>();
+    public static List<Points> mSquareList = new ArrayList<>();
 
     //to check if a corner is being drag and dropped
     boolean isCornerActivated = false;
@@ -79,7 +63,6 @@ public class Square extends View {
     }
 
 
-
     @Override
     public void onDraw(Canvas canvas) {
 
@@ -88,8 +71,7 @@ public class Square extends View {
 
 
         //onTap add square to list
-        if(((startX == endX) && (startY == endY)) && !isCornerActivated)
-        {
+        if (((startX == endX) && (startY == endY)) && !isCornerActivated) {
             //capturing points
             Points points = new Points();
 
@@ -100,14 +82,21 @@ public class Square extends View {
 
             //adding each square to the list
             mSquareList.add(points);
+
+            //resetting start and end coordinates
+            startX = 0;
+            startY = 0;
+
+            endX = 1;
+            endY = 1;
         }
 
         //draw all squares
 
-        for(int i=0; i< mSquareList.size(); i++){
+        for (int i = 0; i < mSquareList.size(); i++) {
             //draw a square
             canvas.drawRect(mSquareList.get(i).getStartX(), mSquareList.get(i).getStartY(),
-                    mSquareList.get(i).getEndX() , mSquareList.get(i).getEndY(), paint);
+                    mSquareList.get(i).getEndX(), mSquareList.get(i).getEndY(), paint);
         }
 
 
@@ -143,8 +132,8 @@ public class Square extends View {
     private void onActionDown(MotionEvent event) {
         currentAction = "down";
 
-        startX = (int)event.getX();
-        startY = (int)event.getY();
+        startX = (int) event.getX();
+        startY = (int) event.getY();
     }
 
     private void onActionCancel(MotionEvent event) {
@@ -156,39 +145,39 @@ public class Square extends View {
 
         currentAction = "move";
 
-        endX = (int)event.getX();
-        endY =(int)event.getY();
+        endX = (int) event.getX();
+        endY = (int) event.getY();
 
-        int diffX = endX-startX;
+        int diffX = endX - startX;
 
         //check if statX and startY is around the corner of any square
-        for(int i=0; i< mSquareList.size(); i++){
+        for (int i = 0; i < mSquareList.size(); i++) {
 
-            if(isTouchAroundCorner(startX,startY,mSquareList.get(i).getStartX(),mSquareList.get(i).getStartY())){
+            if (isTouchAroundCorner(startX, startY, mSquareList.get(i).getStartX(), mSquareList.get(i).getStartY())) {
 
-                mSquareList.get(i).setStartX(startX+diffX);
-                mSquareList.get(i).setStartY(startY+diffX);
-
-                isCornerActivated = true;
-
-            }else if(isTouchAroundCorner(startX,startY,mSquareList.get(i).getEndX(),mSquareList.get(i).getStartY())){
-
-                mSquareList.get(i).setEndX(startX+diffX);
-                mSquareList.get(i).setStartY(startY-diffX);
+                mSquareList.get(i).setStartX(startX + diffX);
+                mSquareList.get(i).setStartY(startY + diffX);
 
                 isCornerActivated = true;
 
-            }else if(isTouchAroundCorner(startX,startY,mSquareList.get(i).getEndX(),mSquareList.get(i).getEndY())){
+            } else if (isTouchAroundCorner(startX, startY, mSquareList.get(i).getEndX(), mSquareList.get(i).getStartY())) {
 
-                mSquareList.get(i).setEndX(startX+diffX);
-                mSquareList.get(i).setEndY(startY+diffX);
+                mSquareList.get(i).setEndX(startX + diffX);
+                mSquareList.get(i).setStartY(startY - diffX);
 
                 isCornerActivated = true;
 
-            }else if (isTouchAroundCorner(startX,startY,mSquareList.get(i).getStartX(),mSquareList.get(i).getEndY())){
+            } else if (isTouchAroundCorner(startX, startY, mSquareList.get(i).getEndX(), mSquareList.get(i).getEndY())) {
 
-                mSquareList.get(i).setStartX(startX+diffX);
-                mSquareList.get(i).setEndY(startY-diffX);
+                mSquareList.get(i).setEndX(startX + diffX);
+                mSquareList.get(i).setEndY(startY + diffX);
+
+                isCornerActivated = true;
+
+            } else if (isTouchAroundCorner(startX, startY, mSquareList.get(i).getStartX(), mSquareList.get(i).getEndY())) {
+
+                mSquareList.get(i).setStartX(startX + diffX);
+                mSquareList.get(i).setEndY(startY - diffX);
 
                 isCornerActivated = true;
 
@@ -201,20 +190,26 @@ public class Square extends View {
 
         currentAction = "up";
 
-        endX = (int)event.getX();
-        endY = (int)event.getY();
+        endX = (int) event.getX();
+        endY = (int) event.getY();
 
     }
 
     //check if coordinates of touch is on/around the corner of the square
     private boolean isTouchAroundCorner(int touchX, int touchY, int cornerX, int cornerY) {
-        double distance = Math.sqrt((double)(((touchX - cornerX) * (touchX - cornerX)) + (touchY - cornerY)
-                        * (touchY - cornerY)));
+        double distance = Math.sqrt((double) (((touchX - cornerX) * (touchX - cornerX)) + (touchY - cornerY)
+                * (touchY - cornerY)));
 
-        if(distance < 50.00)
+        if (distance < 50.00)
             return true;
         else
             return false;
+    }
+
+
+    //method to get the squares list
+    public static List<Points> getCoordinatesList() {
+        return mSquareList;
     }
 
 }

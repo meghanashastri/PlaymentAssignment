@@ -1,6 +1,8 @@
 package com.example.meg.playmentassignment.models;
 
-public class Points {
+import java.io.Serializable;
+
+public class Points implements Serializable{
     String pointName;
     int startX;
     int startY;
