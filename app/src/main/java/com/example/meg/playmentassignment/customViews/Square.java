@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.util.AttributeSet;
@@ -19,6 +18,9 @@ public class Square extends View {
 
     Canvas canvas;
     Paint paint = new Paint();
+
+    int canvasHeight;
+    int canvasWidth;
 
     // up/down/move
     String currentAction = "none";
@@ -66,12 +68,16 @@ public class Square extends View {
     @Override
     public void onDraw(Canvas canvas) {
 
+        //set canvas range
+        canvasHeight = canvas.getHeight();
+        canvasWidth = canvas.getWidth();
+
         //clear the canvas
         canvas.drawColor(Color.TRANSPARENT);
 
 
         //onTap add square to list
-        if (((startX == endX) && (startY == endY)) && !isCornerActivated) {
+        if (((startX == endX) && (startY == endY)) && isWithinCanvasRange() && !isCornerActivated) {
             //capturing points
             Points points = new Points();
 
@@ -193,6 +199,16 @@ public class Square extends View {
         endX = (int) event.getX();
         endY = (int) event.getY();
 
+    }
+
+
+    private boolean isWithinCanvasRange() {
+        if ((startX + 200) > canvasWidth)
+            return false;
+        if ((startY + 250) > canvasHeight)
+            return false;
+
+        return true;
     }
 
     //check if coordinates of touch is on/around the corner of the square

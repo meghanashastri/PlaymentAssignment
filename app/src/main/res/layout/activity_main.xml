@@ -8,14 +8,14 @@
     <Button
         android:id="@+id/btnViewCoordinates"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:text="@string/button_text" />
 
     <com.example.meg.playmentassignment.customViews.Square
         android:id="@+id/canvas"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_above="@id/btnViewCoordinates"
         android:background="#ffffff" />
 
