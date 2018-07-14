@@ -4,21 +4,39 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.util.AttributeSet;
+import com.example.meg.playmentassignment.models.Points;
+import java.util.ArrayList;
+import java.util.List;
+
+
+
 
 public class Square extends View {
 
-    Paint paint = new Paint();
-    float startX = 0f;
-    float startY = 0f;
-
-    float endX = 0f;
-    float endY = 0f;
-
-    boolean isDown = false;
     Canvas canvas;
+    Paint paint = new Paint();
+
+    // up/down/move
+    String currentAction = "none";
+
+    //start coordinates of the square
+    int startX = 0;
+    int startY = 0;
+
+    //end coordinated of the square
+    //set to 1 to avoid drawing square on initialisation
+    int endX = 1;
+    int endY = 1;
+
+    //List of all squares draw on the canvas
+    List<Points> mSquareList = new ArrayList<>();
+
+
+
 
     public Square(Context context) {
         super(context);
@@ -44,12 +62,37 @@ public class Square extends View {
     }
 
 
+
     @Override
     public void onDraw(Canvas canvas) {
 
+        //clear the canvas
         canvas.drawColor(Color.TRANSPARENT);
-        if (isDown) {
-            canvas.drawRect(startX, startY, endX, endY, paint);
+
+
+        //onTap add square to list
+        if((startX == endX) && (startY == endY))
+        {
+
+
+            //capturing points
+            Points points = new Points();
+
+            points.setStartX(startX);
+            points.setStartY(startY);
+            points.setEndX(endX + 200);
+            points.setEndY(endY + 200);
+
+            //adding each square to the list
+            mSquareList.add(points);
+        }
+
+        //draw all squares
+
+        for(int i=0; i< mSquareList.size(); i++){
+            //draw a square
+            canvas.drawRect(mSquareList.get(i).getStartX(), mSquareList.get(i).getStartY(),
+                    mSquareList.get(i).getEndX() , mSquareList.get(i).getEndY(), paint);
         }
     }
 
@@ -61,6 +104,9 @@ public class Square extends View {
                 break;
             case MotionEvent.ACTION_MOVE:
                 onActionMove(event);
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                onActionCancel(event);
                 break;
             case MotionEvent.ACTION_UP:
                 onActionUp(event);
@@ -76,24 +122,33 @@ public class Square extends View {
     }
 
     private void onActionDown(MotionEvent event) {
-        startX = event.getX();
-        startY = event.getY();
+        currentAction = "down";
 
-        endY = 0;
-        endX = 0;
+        startX = (int)event.getX();
+        startY = (int)event.getY();
+    }
 
+    private void onActionCancel(MotionEvent event) {
+
+        currentAction = "cancel";
     }
 
     private void onActionMove(MotionEvent event) {
-        endX = event.getX();
-        endY = event.getY();
-        isDown = true;
+
+        currentAction = "move";
+
+        endX = (int)event.getX();
+        endY =(int)event.getY();
+
     }
 
     private void onActionUp(MotionEvent event) {
-        endX = event.getX();
-        endY = event.getY();
-        isDown = true;
+
+        currentAction = "up";
+
+        endX = (int)event.getX();
+        endY = (int)event.getY();
+
     }
 
 }
