@@ -12,9 +12,6 @@ import com.example.meg.playmentassignment.models.Points;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-
 public class Square extends View {
 
     Canvas canvas;
@@ -35,7 +32,8 @@ public class Square extends View {
     //List of all squares draw on the canvas
     List<Points> mSquareList = new ArrayList<>();
 
-
+    //to check if a corner is being drag and dropped
+    boolean isCornerActivated = false;
 
 
     public Square(Context context) {
@@ -71,10 +69,8 @@ public class Square extends View {
 
 
         //onTap add square to list
-        if((startX == endX) && (startY == endY))
+        if(((startX == endX) && (startY == endY)) && !isCornerActivated)
         {
-
-
             //capturing points
             Points points = new Points();
 
@@ -94,6 +90,10 @@ public class Square extends View {
             canvas.drawRect(mSquareList.get(i).getStartX(), mSquareList.get(i).getStartY(),
                     mSquareList.get(i).getEndX() , mSquareList.get(i).getEndY(), paint);
         }
+
+
+        isCornerActivated = false;
+
     }
 
     @Override
@@ -140,6 +140,44 @@ public class Square extends View {
         endX = (int)event.getX();
         endY =(int)event.getY();
 
+        //check if statX and startY is around the corner of any square
+        for(int i=0; i< mSquareList.size(); i++){
+
+            if(isTouchAroundCorner(startX,startY,mSquareList.get(i).getStartX(),mSquareList.get(i).getStartY())){
+
+                mSquareList.get(i).setStartX(endX);
+                mSquareList.get(i).setStartY(endY);
+
+                Log.d("Corner Touched:"," ");
+                isCornerActivated = true;
+
+            }else if(isTouchAroundCorner(startX,startY,mSquareList.get(i).getEndX(),mSquareList.get(i).getStartY())){
+
+                mSquareList.get(i).setEndX(endX);
+                mSquareList.get(i).setStartY(endY);
+
+                Log.d("Corner Touched:"," ");
+                isCornerActivated = true;
+
+            }else if(isTouchAroundCorner(startX,startY,mSquareList.get(i).getEndX(),mSquareList.get(i).getEndY())){
+
+                mSquareList.get(i).setEndX(endX);
+                mSquareList.get(i).setEndY(endY);
+
+                Log.d("Corner Touched:"," ");
+                isCornerActivated = true;
+
+            }else if (isTouchAroundCorner(startX,startY,mSquareList.get(i).getStartX(),mSquareList.get(i).getEndY())){
+
+                mSquareList.get(i).setStartX(endX);
+                mSquareList.get(i).setEndY(endY);
+
+                Log.d("Corner Touched:"," ");
+                isCornerActivated = true;
+
+            }
+        }
+
     }
 
     private void onActionUp(MotionEvent event) {
@@ -149,6 +187,17 @@ public class Square extends View {
         endX = (int)event.getX();
         endY = (int)event.getY();
 
+    }
+
+    //check if coordinates of touch is on/around the corner of the sqaure
+    private boolean isTouchAroundCorner(int touchX, int touchY, int cornerX, int cornerY) {
+        double distance = Math.sqrt((double)(((touchX - cornerX) * (touchX - cornerX)) + (touchY - cornerY)
+                        * (touchY - cornerY)));
+
+        if(distance < 50.00)
+            return true;
+        else
+            return false;
     }
 
 }
